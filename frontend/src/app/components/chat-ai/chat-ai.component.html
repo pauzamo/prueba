@@ -1,0 +1,75 @@
+
+<div class="chat-container">
+  <div class="chat-header">
+    <div class="header-content">
+      <i class="fas fa-robot"></i>
+      <div>
+        <h2>Asistente de BiblioApp</h2>
+        <p>Pregúntame sobre libros</p>
+      </div>
+    </div>
+    <button class="clear-btn" (click)="clearChat()" title="Nueva conversación">
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
+
+  <div class="messages-container" #messagesContainer>
+    <div *ngFor="let message of messages" 
+         class="message" 
+         [class.user-message]="message.role === 'user'"
+         [class.assistant-message]="message.role === 'assistant'">
+      <div class="message-avatar">
+        <i *ngIf="message.role === 'user'" class="fas fa-user"></i>
+        <i *ngIf="message.role === 'assistant'" class="fas fa-robot"></i>
+      </div>
+      <div class="message-content">
+        <div class="message-text" [innerHTML]="formatMessage(message.content)"></div>
+        <div class="message-time">{{ message.timestamp | date:'short' }}</div>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="message assistant-message loading-message">
+      <div class="message-avatar">
+        <i class="fas fa-robot"></i>
+      </div>
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ error }}
+    </div>
+  </div>
+
+  <div *ngIf="messages.length === 1" class="suggested-prompts">
+    <p class="prompts-title">Prueba preguntando:</p>
+    <button *ngFor="let prompt of suggestedPrompts" 
+            class="prompt-btn"
+            (click)="useSuggestedPrompt(prompt)">
+      {{ prompt }}
+    </button>
+  </div>
+
+  <div class="input-container">
+    <textarea 
+      [(ngModel)]="userInput"
+      (keypress)="onKeyPress($event)"
+      placeholder="Escribe tu mensaje aquí..."
+      rows="1"
+      [disabled]="isLoading"></textarea>
+    <button 
+      (click)="sendMessage()"
+      [disabled]="!userInput.trim() || isLoading"
+      class="send-btn">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
+</div>
+
+<app-footer></app-footer>

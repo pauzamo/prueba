@@ -1,0 +1,64 @@
+<app-navbar></app-navbar>
+
+<div class="perfil-container">
+
+  <h2>Mi Perfil</h2>
+
+  <div *ngIf="isLoading">Cargando datos...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="success" class="success">{{ success }}</div>
+
+  <div *ngIf="usuario && !isLoading" class="perfil-card">
+    <div class="perfil-header no-avatar">
+      <div class="perfil-nombre-completo">
+        <h3>{{ usuario.nombre }} {{ usuario.apellido }}</h3>
+      </div>
+    </div>
+
+    <div class="perfil-info-campos">
+      <div class="dato-group">
+        <label class="dato-etiqueta">Nombre</label>
+        <span *ngIf="!editMode" class="dato-valor">{{ usuario.nombre }}</span>
+        <input *ngIf="editMode" [(ngModel)]="usuario.nombre" class="dato-input">
+      </div>
+
+      <div class="dato-group">
+        <label class="dato-etiqueta">Apellido</label>
+        <span *ngIf="!editMode" class="dato-valor">{{ usuario.apellido }}</span>
+        <input *ngIf="editMode" [(ngModel)]="usuario.apellido" class="dato-input">
+      </div>
+
+      <div class="dato-group">
+        <label class="dato-etiqueta">Email</label>
+        <span class="dato-valor">{{ usuario.email }}</span>
+      </div>
+
+      <div class="dato-group">
+        <label class="dato-etiqueta">Teléfono</label>
+        <span *ngIf="!editMode" class="dato-valor">{{ usuario.telefono }}</span>
+        <input *ngIf="editMode" [(ngModel)]="usuario.telefono" class="dato-input">
+      </div>
+
+      <div class="dato-group">
+        <label class="dato-etiqueta">Dirección</label>
+        <span *ngIf="!editMode" class="dato-valor">{{ usuario.direccion }}</span>
+        <input *ngIf="editMode" [(ngModel)]="usuario.direccion" class="dato-input">
+      </div>
+
+      <div class="dato-group">
+        <label class="dato-etiqueta">DNI</label>
+        <span *ngIf="!editMode" class="dato-valor">{{ usuario.dni }}</span>
+        <input *ngIf="editMode" [(ngModel)]="usuario.dni" class="dato-input">
+      </div>
+    </div>
+
+    <div class="perfil-actions">
+      <button *ngIf="!editMode" type="button" class="btn-editar" (click)="activarEdicionGlobal()">Editar Perfil</button>
+      <button *ngIf="editMode" type="button" class="btn-guardar" (click)="guardarCambiosGlobal()">Guardar Cambios</button>
+      <button *ngIf="editMode" type="button" class="btn-cancelar" (click)="cancelarEdicionGlobal()">Cancelar</button>
+    </div>
+
+  </div>
+</div>
+
+<app-footer></app-footer>

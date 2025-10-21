@@ -1,0 +1,121 @@
+/* Estilos generales */
+.footer-container {
+  background: #1a2a2a;
+  color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem 0 0;
+  margin-top: 3rem;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Secciones del footer */
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+  margin-bottom: 2rem;
+  padding: 0 15px;
+}
+
+.footer-title {
+  color: #e86e2c;
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.footer-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 50px;
+  height: 2px;
+  background: #e86e2c;
+}
+
+/* Menú de navegación */
+.footer-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-menu li {
+  margin-bottom: 0.8rem;
+}
+
+.footer-menu a {
+  color: #f8f9fa;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.footer-menu a:hover {
+  color: #e86e2c;
+  transform: translateX(5px);
+}
+
+/* Iconos */
+.icon {
+  color: #e86e2c;
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
+  color: #f8f9fa;
+  background: #2c3e3e;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  background: #e86e2c;
+  transform: translateY(-3px);
+}
+
+/* Parte inferior */
+.footer-bottom {
+  background: #0f1a1a;
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .footer-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .footer-menu a:hover {
+    transform: none;
+  }
+}

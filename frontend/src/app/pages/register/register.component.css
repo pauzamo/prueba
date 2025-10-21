@@ -1,0 +1,78 @@
+.registro-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 12px;
+  background: #ffffffcc;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.registro-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+.registro-form input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.registro-form input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.registro-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.registro-form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.registro-form button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+/* Estilo para el link de "Ir a iniciar sesión" */
+
+.registro-form a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.registro-form a:hover {
+  color: #0056b3;
+}
+
+/* Responsive para pantallas chicas */
+@media (max-width: 480px) {
+  .registro-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .registro-form input,
+  .registro-form button {
+    font-size: 15px;
+  }
+}

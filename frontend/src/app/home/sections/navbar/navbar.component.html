@@ -1,0 +1,88 @@
+<nav class="navbar">
+  <div class="logo-container">
+    <a routerLink="/home" class="logo-link">
+      <img src="logo.png" alt="Logo de la librería" class="logo-img">
+    </a>
+    <div class="site-name" routerLink="/home">Historias al Alcance</div>
+  </div>
+
+  <div class="nav-links">
+    <ul class="nav-menu">
+      <li>
+        <a routerLink="/home" (click)="scrollTo('news')">
+          <i class="fas fa-book-open"></i> Novedades
+        </a>
+      </li>
+      <li>
+        <a routerLink="/home" (click)="scrollTo('promotions')">
+          <i class="fas fa-tag"></i> Promociones
+        </a>
+      </li>
+      <li>
+        <a routerLink="/home" (click)="scrollTo('best-sellers')">
+          <i class="fas fa-list-ul"></i> Más Vendidos
+        </a>
+      </li>
+      <li>
+        <a routerLink="/catalogo">
+          <i class="fas fa-book"></i> Catálogo
+        </a>
+      </li>
+      <li>
+        <a routerLink="/chat">
+          <i class="fas fa-robot"></i> Chat IA
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+  <!-- Icono Carrito navbar -->
+  <div class="user-actions">
+    <div class="cart-wrapper">
+      <div class="cart-icon-container" (click)="toggleCart()">
+        <i class="fas fa-shopping-cart cart-icon"></i>
+        <span class="cart-counter">{{ cartService.getTotalItems() }}</span>
+      </div>
+    </div>
+
+    <ul class="nav-menu">
+      <li>
+        <a routerLink="/perfil">
+          <i class="fas fa-user-circle"></i> Mi Perfil
+        </a>
+      </li>
+      <li>
+       <a (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i> Salir
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Al hacer click en el carrito se desplega esta ventana -->
+  <div class="mini-cart" [class.active]="showCart">
+    <h3>Tu Carrito ({{ cartService.getTotalItems() }})</h3>
+    <div class="cart-items">
+      <div class="cart-item" *ngFor="let item of cartService.cartItems$ | async">
+        <img [src]="item.cover" [alt]="item.title" class="cart-item-img">
+        <div class="item-details">
+          <h4>{{ item.title }}</h4>
+          <div class="item-controls">
+            <button (click)="cartService.updateQuantity(item.id, item.quantity - 1)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="cartService.updateQuantity(item.id, item.quantity + 1)">+</button>
+            <span class="item-price">{{ item.price * item.quantity | currency }}</span>
+          </div>
+        </div>
+        <button class="remove-item" (click)="cartService.removeFromCart(item.id)">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cart-total">
+      <p>Total: <span>{{ cartService.getTotalPrice() | currency }}</span></p>
+      <button class="checkout-btn" (click)="checkout()">Finalizar Compra</button>
+    </div>
+  </div>
+</nav>

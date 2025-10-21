@@ -1,0 +1,17 @@
+<section class="bank-promotions">
+  <h2>Promociones bancarias exclusivas</h2>
+  <div class="bank-logos">
+    <div class="bank-item" *ngFor="let bank of banks">
+      <img [src]="bank.logo" [alt]="'Logo ' + bank.name">
+      <p class="bank-name">{{ bank.name }}</p>
+    </div>
+  </div>
+
+  <div class="promo-cards">
+    <div class="promo-card" *ngFor="let promo of promotions">
+      <h3>{{ promo.bank }}</h3>
+      <p>{{ promo.description }}</p>
+      <span class="discount">{{ promo.discount }}% OFF</span>
+    </div>
+  </div>
+</section>
