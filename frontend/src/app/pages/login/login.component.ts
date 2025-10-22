@@ -1,6 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { APP_CONFIG, AppConfig } from '../../tokens/app-config.token';
 
 @Component({
   selector: 'app-login',
@@ -14,9 +13,9 @@ import { APP_CONFIG, AppConfig } from '../../tokens/app-config.token';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  private cfg: AppConfig = inject(APP_CONFIG);  // 👈 tipado explícito
 
   ngOnInit(): void {
-    window.location.href = this.cfg.loginUrl;
+    // 🚀 En cuanto entra al componente, redirige a Cognito
+    window.location.href = 'http://localhost:3000/login';
   }
 }

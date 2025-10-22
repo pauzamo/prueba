@@ -10,8 +10,9 @@ export interface AppConfig {
 export const APP_CONFIG = new InjectionToken<AppConfig>('APP_CONFIG');
 
 export const DEFAULT_APP_CONFIG: AppConfig = {
-    backendBaseUrl: 'https://13.216.111.250:3000/api', 
+    // Usamos HTTP en la configuración por defecto
+    backendBaseUrl: 'http://13.216.111.250:3000/api', 
     userApi: '/users',
-    loginUrl: '/auth/login',
-    logoutUrl: '/auth/logout',
+    loginUrl: 'http://13.216.111.250:3000/login',
+    logoutUrl: 'http://13.216.111.250:3000/logout',
 };

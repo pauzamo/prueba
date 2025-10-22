@@ -33,7 +33,4 @@ export class NavbarComponent {
     this.router.navigate(['/checkout']);
     this.showCart = false;
   }
-  logout() {
-    window.location.href = 'http://13.216.111.250:3000/logout';
-  }
 }
