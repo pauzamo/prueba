@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class CheckoutService {
 
-  private apiUrl = 'http://localhost:3000/api/checkout';
+  private apiUrl = 'https://13.216.111.250/api/checkout';
 
   constructor(private http: HttpClient) { }
 

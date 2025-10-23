@@ -16,6 +16,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     // 🚀 En cuanto entra al componente, redirige a Cognito
-    window.location.href = 'https://13.216.111.250:3000/login';
+    window.location.href = 'https://13.216.111.250/api/login';
   }
 }

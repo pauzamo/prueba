@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private URL = 'https://13.216.111.250:3000/api/auth';
-  private URLUser = 'https://13.216.111.250:3000/api/user';
+  private URL = 'https://13.216.111.250/api/auth';
+  private URLUser = 'https://13.216.111.250/api/user';
 
   constructor(private http: HttpClient) {}
 
