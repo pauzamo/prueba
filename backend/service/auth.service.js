@@ -33,11 +33,12 @@ const loginUser = async ({ email, password }) => {
   }
 
   const token = jwt.sign(
-    { email: user.email, nombre: user.nombre, id: user.idUsuario },
+    { email: user.email, nombre: user.nombre, id: user.id },
     'secreto123',
     { expiresIn: '1h' }
   );
 
-  return { status: 200, body: { message: 'Login exitoso', token, idUsuario: user.idUsuario, email: user.email } };
+  return { status: 200, body: { message: 'Login exitoso', token, idUsuario: user.idUsuario } };
 };
+
 module.exports = { registerUser, loginUser };

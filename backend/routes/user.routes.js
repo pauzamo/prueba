@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createUser, getUserByEmail, updateUser } = require('../controller/user.controller');
-
-router.post('/', createUser);
+const { getUserByEmail, updateUser } = require('../controller/user.controller');
 
 /**
  * @swagger

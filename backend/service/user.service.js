@@ -1,23 +1,5 @@
 const authRepository = require('../repository/auth.repository');
 
-const createUser = async ({ email }) => {
-  try {
-    await authRepository.insertUser({
-      email,
-      nombre: '',
-      apellido: '',
-      telefono: '',
-      direccion: '',
-      dni: ''
-    });
-
-    return { status: 201, body: { message: 'Usuario creado desde Lambda' } };
-  } catch (error) {
-    console.error('Error en createUser service:', error);
-    return { status: 500, body: { message: 'Error creando usuario' } };
-  }
-};
-
 const getUserByEmail = async (email) => {
   try {
     const user = await authRepository.getUserByEmail(email);
@@ -67,6 +49,5 @@ const updateUserByEmail = async (email, userData) => {
 
 module.exports = {
   getUserByEmail,
-  updateUserByEmail,
-  createUser
+  updateUserByEmail
 };
