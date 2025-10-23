@@ -1,0 +1,52 @@
+.carousel-container {
+  position: relative;  
+  width: 1200px;
+  margin: auto;
+}
+
+.carousel-slide img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+@media (max-width: 1024px) {
+  .carousel-container {
+    width: 90%; /* se adapta al 90% del contenedor padre */
+  }
+  
+  button {
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
+/* Móviles (smartphones) */
+@media (max-width: 600px) {
+  .carousel-container {
+    width: 100%; /* ocupa todo el ancho disponible */
+  }
+  
+  button {
+    padding: 6px;
+    font-size: 12px;
+  }
+}

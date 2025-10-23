@@ -1,0 +1,16 @@
+<section class="book-carousel">
+  <h2>{{ title }}</h2>
+  <div class="carousel-container">
+    <div class="carousel-slide">
+      <div class="book-card" *ngFor="let book of visibleBooks">
+        <img [src]="book.cover" [alt]="book.title" (error)="book.cover = 'logo.png'">
+        <h3>{{ book.title }}</h3>
+        <p>{{ book.author }}</p>
+        <span class="price">{{ book.price | currency }}</span>
+        <button class="buy-btn" (click)="addToCart(book)"><i class="fas fa-shopping-cart me-1"></i>Comprar</button>
+      </div>
+    </div>
+    <button class="prev" (click)="prevSlide()" [disabled]="currentIndex === 0">❮</button>
+    <button class="next" (click)="nextSlide()" [disabled]="currentIndex >= books.length - visibleItems">❯</button>
+  </div>
+</section>
