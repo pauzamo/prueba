@@ -81,5 +81,6 @@ router.post('/register', register);
  *         description: Error interno del serv
  */
 router.post('/login', login);
+router.post('/exchange-code', exchangeCode);
 
 module.exports = router;
