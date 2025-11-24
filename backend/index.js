@@ -5,64 +5,43 @@ const session = require('express-session');
 const cors = require('cors');
 require('./config/db.js');
 
-// Rutas
-const authRoutes = require('./routes/auth.routes.js');
-const favoritesRoutes = require('./routes/favorites.routes.js');
-const bookRoutes = require('./routes/book.routes.js');
-const checkoutRoutes = require('./routes/checkout.routes.js');
-const aiGeminiRoutes = require('./routes/aiGemini.routes.js');
-
-// App
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS
 app.use(cors({
-  origin: [
-    'http://localhost:4200',
-    // 'https://main.d17jgtfjujlttk.amplifyapp.com'
-  ],
+  origin: ['http://localhost:4200'],
   credentials: true
 }));
 
-// JSON + Session
 app.use(express.json());
 app.use(session({
-  secret: 'some secret',              // ideal: process.env.SESSION_SECRET
+  secret: 'some secret',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, sameSite: 'lax' } // HTTP local
+  cookie: { secure: false, sameSite: 'lax' }
 }));
 
-// Ruta de prueba
-app.get('/', (req, res) => res.send('¡Backend funcionando con Cognito! 🚀'));
+app.get('/', (req, res) => res.send('Backend OK + Cognito'));
 
-// ---------- BLOQUE COGNITO ----------
+// ---------- COGNITO ----------
 (async () => {
   try {
-    // Import openid-client dentro del bloque
     const { Issuer, generators } = require('openid-client');
 
-    if (!Issuer || !generators) {
-      throw new Error('openid-client no exportó Issuer o generators');
-    }
-
-    // 1) Descubrir ISSUER de Cognito (User Pool ID)
     const issuer = await Issuer.discover(
-      'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_vvT9JN1bR'
+      `https://cognito-idp.us-east-1.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`
     );
 
-    // 2) Configurar cliente OIDC
     const client = new issuer.Client({
-      client_id: '3nfpcp4h6gp49cet4qhgtihug0',
-      client_secret: '1p72b463e88tjp1oqkjpddc7nri0024ne5bi52poqdvfqsov9q60',
-      redirect_uris: ['http://localhost:4200/login'], // igual que en Cognito
+      client_id: process.env.COGNITO_CLIENT_ID,
+      client_secret: process.env.COGNITO_CLIENT_SECRET, // AGRÉGALO AL .env
+      redirect_uris: ['http://localhost:4200/login'],
       response_types: ['code']
     });
 
-    console.log('✅ Cognito client inicializado');
+    console.log('✅ Cognito client inicializado con', client.metadata.client_id);
 
-    // 3) LOGIN: inicia flujo PKCE
+    // LOGIN
     app.get('/login', (req, res) => {
       const codeVerifier = generators.codeVerifier();
       const codeChallenge = generators.codeChallenge(codeVerifier);
@@ -70,72 +49,76 @@ app.get('/', (req, res) => res.send('¡Backend funcionando con Cognito! 🚀'));
       req.session.codeVerifier = codeVerifier;
 
       const url = client.authorizationUrl({
-        scope: 'openid email phone',
+        scope: 'openid email',
         code_challenge: codeChallenge,
         code_challenge_method: 'S256'
       });
 
+      console.log('Auth URL =>', url);   // 👈 VER ACÁ EL client_id
       res.redirect(url);
     });
 
-    // 4) CALLBACK: intercambia code por tokens
-    app.get('/callback', async (req, res) => {
-      try {
-        if (!req.session || !req.session.codeVerifier) {
-          return res.status(400).send('No hay codeVerifier en sesión');
-        }
+    // CALLBACK
+  app.get('/callback', async (req, res) => {
+  try {
+    if (!req.session || !req.session.codeVerifier) {
+      return res.status(400).send('No hay codeVerifier en sesión');
+    }
 
-        const params = client.callbackParams(req);
+    const params = client.callbackParams(req);
 
-        const tokenSet = await client.callback(
-          'http://localhost:4200/login',   // mismo redirect_uri configurado
-          params,
-          { code_verifier: req.session.codeVerifier }
-        );
+    const tokenSet = await client.callback(
+      'http://localhost:4200/login',
+      params,
+      { code_verifier: req.session.codeVerifier }
+    );
 
-        req.session.tokenSet = tokenSet;
+    req.session.tokenSet = tokenSet;
+    return res.json({ message: 'Login OK', token: tokenSet });
+  } catch (err) {
+    console.error('Error en /callback:');
+    console.error('message:', err.message);
+    if (err.response && err.response.data) {
+      console.error('response.data:', err.response.data);
+    }
+    return res.status(500).json({ error: 'Error en callback' });
+  }
+});
 
-        res.json({
-          message: 'Login exitoso con Cognito ✅',
-          token: tokenSet
-        });
-
-      } catch (err) {
-        console.error('Error en /callback:', err);
-        res.status(500).json({ error: 'Error en callback' });
-      }
-    });
-
-    // 5) LOGOUT
+    // LOGOUT
     app.get('/logout', (req, res) => {
       req.session.destroy(() => {
-        const cognitoDomain = 'https://us-east-1vvt9jn1br.auth.us-east-1.amazoncognito.com';
-
+        const cognitoDomain = 'us-east-1vvt9jn1br.auth.us-east-1.amazoncognito.com';
         const logoutRedirectUri = 'http://localhost:4200/login';
 
         const logoutUrl =
           `https://${cognitoDomain}/logout?` +
-          `client_id=3nfpcp4h6gp49cet4qhgtihug0&` +
+          `client_id=${process.env.COGNITO_CLIENT_ID}&` +
           `logout_uri=${encodeURIComponent(logoutRedirectUri)}`;
 
         res.redirect(logoutUrl);
       });
     });
 
-    // 6) APIs
+    // Rutas API
+    const authRoutes = require('./routes/auth.routes.js');
+    const favoritesRoutes = require('./routes/favorites.routes.js');
+    const bookRoutes = require('./routes/book.routes.js');
+    const checkoutRoutes = require('./routes/checkout.routes.js');
+    const aiGeminiRoutes = require('./routes/aiGemini.routes.js');
+
     app.use('/api/auth', authRoutes);
     app.use('/api/favorites', favoritesRoutes);
     app.use('/api/books', bookRoutes);
     app.use('/api/checkout', checkoutRoutes);
     app.use('/api/ai', aiGeminiRoutes);
 
-    // 7) Levantar servidor
     app.listen(PORT, () =>
-      console.log(`Servidor escuchando en http://localhost:${PORT}`)
+      console.log(`Servidor en http://localhost:${PORT}`)
     );
 
-  } catch (err) {
-    console.error('❌ Error cargando openid-client:', err);
+  } catch (e) {
+    console.error('❌ Error Cognito:', e);
     process.exit(1);
   }
 })();
