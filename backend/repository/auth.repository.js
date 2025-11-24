@@ -1,56 +1,48 @@
-const { poolPromise, sql } = require('../config/db');
+const sql = require('mssql');
+const db = require('../config/db'); // tu config de conexión
 
-// Obtiene todos los datos de perfil para mostrar en la vista de Perfil
 const getUserByEmail = async (email) => {
-  const pool = await poolPromise;
+  const pool = await db.getConnection();
   const result = await pool.request()
     .input('email', sql.VarChar, email)
-    .query('SELECT idUsuario, email, nombre, apellido, telefono, direccion, dni FROM Usuarios WHERE email = @email');
-
-  return result.recordset[0];
+    .query('SELECT * FROM Usuarios WHERE email = @email');
+  return result.recordset[0] || null;
 };
 
-// Crea el perfil de usuario en la DB local después de la autenticación de Cognito
-const insertUserProfile = async ({ email, nombre, apellido, telefono, direccion, dni }) => {
-  const pool = await poolPromise;
+const insertUserProfile = async (user) => {
+  const pool = await db.getConnection();
   await pool.request()
-    .input('email', sql.VarChar, email)
-    .input('nombre', sql.VarChar, nombre)
-    .input('apellido', sql.VarChar, apellido)
-    .input('telefono', sql.VarChar, telefono)
-    .input('direccion', sql.VarChar, direccion)
-    .input('dni', sql.VarChar, dni)
+    .input('email', sql.VarChar, user.email)
+    .input('cognitoSub', sql.VarChar, user.cognitoSub)
+    .input('nombre', sql.VarChar, user.nombre)
+    .input('apellido', sql.VarChar, user.apellido)
+    .input('telefono', sql.VarChar, user.telefono)
+    .input('direccion', sql.VarChar, user.direccion)
+    .input('dni', sql.VarChar, user.dni)
     .query(`
-      INSERT INTO Usuarios (email, nombre, apellido, telefono, direccion, dni)
-      VALUES (@email, @nombre, @apellido, @telefono, @direccion, @dni)
+      INSERT INTO Usuarios (email, cognitoSub, nombre, apellido, telefono, direccion, dni)
+      VALUES (@email, @cognitoSub, @nombre, @apellido, @telefono, @direccion, @dni)
     `);
 };
 
-// Para el endpoint de actualizar perfil
 const updateUserProfileByEmail = async (email, data) => {
-  const pool = await poolPromise;
-  const request = pool.request().input('email', sql.VarChar, email);
-
-  // Lógica para construir el UPDATE solo con los campos presentes
-  if (data.nombre) request.input('nombre', sql.VarChar, data.nombre);
-  if (data.apellido) request.input('apellido', sql.VarChar, data.apellido);
-  if (data.telefono) request.input('telefono', sql.VarChar, data.telefono);
-  if (data.direccion) request.input('direccion', sql.VarChar, data.direccion);
-  if (data.dni) request.input('dni', sql.VarChar, data.dni);
-  
-  // Si no hay datos para actualizar, retorna false
-  if (Object.keys(data).length === 0) return false; 
-
-  const result = await request.query(`
-    UPDATE Usuarios
-    SET
-      nombre = ISNULL(@nombre, nombre),
-      apellido = ISNULL(@apellido, apellido),
-      telefono = ISNULL(@telefono, telefono),
-      direccion = ISNULL(@direccion, direccion),
-      dni = ISNULL(@dni, dni)
-    WHERE email = @email
-  `);
+  const pool = await db.getConnection();
+  const result = await pool.request()
+    .input('email', sql.VarChar, email)
+    .input('nombre', sql.VarChar, data.nombre)
+    .input('apellido', sql.VarChar, data.apellido)
+    .input('telefono', sql.VarChar, data.telefono)
+    .input('direccion', sql.VarChar, data.direccion)
+    .input('dni', sql.VarChar, data.dni)
+    .query(`
+      UPDATE Usuarios
+      SET nombre = @nombre,
+          apellido = @apellido,
+          telefono = @telefono,
+          direccion = @direccion,
+          dni = @dni
+      WHERE email = @email
+    `);
 
   return result.rowsAffected[0] > 0;
 };

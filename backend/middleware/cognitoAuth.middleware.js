@@ -9,6 +9,7 @@ const verifier = CognitoJwtVerifier.create({
 });
 
 const authenticateCognito = async (req, res, next) => {
+  console.log('AUTH HEADER:', req.headers.authorization);
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

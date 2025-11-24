@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
@@ -24,44 +24,64 @@ export class LoginComponent implements OnInit {
     private http: HttpClient
   ) { }
 
-ngOnInit(): void {
-  this.route.queryParamMap.subscribe(params => {
-    const code = params.get('code'); 
-    
-    if (code) {
-      this.handleCognitoCallback(code);
-    } else if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/home']);
-    } else {
-      // 👉 SI NO HAY CODE NI LOGIN → REDIRIGIR A COGNITO
-      this.redirectToCognito();
-    }
-  });
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      const code = params.get('code');
+
+      if (code) {
+        // Venimos de Cognito con ?code=...
+        this.handleCognitoCallback(code);
+        return;
+      }
+
+      // Si ya tengo token, voy al perfil directo (ajustá ruta si es /miperfil)
+      if (this.authService.isLoggedIn()) {
+  this.router.navigate(['/perfil']);   // antes: '/miperfil'
+  return;
 }
 
-  // Función llamada desde el botón de Login en el HTML
-  redirectToCognito(): void {
-    // Redirige al endpoint /login de su backend, que inicia el flujo PKCE de Cognito
-    window.location.href = 'http://localhost:3000/login'; 
+      // Si no hay ni code ni token, inicio login en Cognito
+      this.redirectToCognito();
+    });
   }
 
-  // Lógica para manejar el código y obtener el token JWT
+  // Redirige al backend que arma la URL de Cognito
+  redirectToCognito(): void {
+    window.location.href = 'http://localhost:3000/login';
+  }
+
+  // Maneja el code → llama a /callback → guarda token → crea perfil → navega
   handleCognitoCallback(code: string): void {
-    this.http.get(`http://localhost:3000/callback?code=${code}`).subscribe({
+    this.http.get('http://localhost:3000/callback', {
+      params: { code },
+      withCredentials: true   // importante para que llegue la cookie de sesión
+    }).subscribe({
       next: (response: any) => {
-        const idToken = response.token.id_token; 
-        
-        if (idToken) {
-            this.authService.setToken(idToken); 
-            this.router.navigate(['/home']); 
-        } else {
-            console.error('Error: Token ID no encontrado.');
-            this.router.navigate(['/login']); 
+        const idToken = response?.token?.id_token;
+
+        if (!idToken) {
+          console.error('Error: Token ID no encontrado en la respuesta del backend.');
+          return;
         }
+
+        // 1) Guardar token en localStorage
+        this.authService.setToken(idToken);
+
+        // 2) Registrar/crear perfil local (si ya existe, backend devuelve 200)
+        this.http.post('http://localhost:3000/api/auth/register-profile', {
+          nombre: '',
+          apellido: '',
+          telefono: '',
+          direccion: '',
+          dni: ''
+        }).subscribe({
+          next: () => this.router.navigate(['/perfil']), // ajustá la ruta si es distinta
+          error: () => this.router.navigate(['/perfil'])
+        });
       },
-      error: (err) => {
-        console.error('Error en el callback del backend:', err);
-        this.router.navigate(['/login']);
+      error: (err: any) => {
+        console.error('Error en el callback del backend:', err, err.error);
+        // Importante: no redirigimos a /login acá para evitar bucles
       }
     });
   }

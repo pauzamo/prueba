@@ -4,10 +4,13 @@ const authenticateCognito = require('../middleware/cognitoAuth.middleware');
 
 const router = express.Router();
 
-router.post('/register-profile', registerProfile); 
+// Crear perfil local (solo después de signup/login)
+router.post('/register-profile', authenticateCognito, registerProfile);
 
-router.post('/profile', getProfile); 
+// Obtener perfil (GET, protegido)
+router.get('/profile', authenticateCognito, getProfile);
 
-router.put('/profile', authenticateCognito, updateProfile); 
+// Actualizar perfil (PUT, protegido)
+router.put('/profile', authenticateCognito, updateProfile);
 
 module.exports = router;
