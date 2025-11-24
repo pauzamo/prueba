@@ -29,14 +29,13 @@ export class LoginComponent implements OnInit {
       const code = params.get('code');
 
       if (code) {
-        // Venimos de Cognito con ?code=...
         this.handleCognitoCallback(code);
         return;
       }
 
-      // Si ya tengo token, voy al perfil directo (ajustá ruta si es /miperfil)
+      
       if (this.authService.isLoggedIn()) {
-  this.router.navigate(['/perfil']);   // antes: '/miperfil'
+  this.router.navigate(['/home']);  
   return;
 }
 
@@ -75,13 +74,12 @@ export class LoginComponent implements OnInit {
           direccion: '',
           dni: ''
         }).subscribe({
-          next: () => this.router.navigate(['/perfil']), // ajustá la ruta si es distinta
-          error: () => this.router.navigate(['/perfil'])
+          next: () => this.router.navigate(['/home']), 
+          error: () => this.router.navigate(['/home'])
         });
       },
       error: (err: any) => {
         console.error('Error en el callback del backend:', err, err.error);
-        // Importante: no redirigimos a /login acá para evitar bucles
       }
     });
   }
