@@ -24,18 +24,20 @@ export class LoginComponent implements OnInit {
     private http: HttpClient
   ) { }
 
-  ngOnInit(): void {
-    this.route.queryParamMap.subscribe(params => {
-      const code = params.get('code'); 
-      
-      if (code) {
-        // Estamos regresando de Cognito con el código de autorización
-        this.handleCognitoCallback(code);
-      } else if (this.authService.isLoggedIn()) {
-        this.router.navigate(['/home']);
-      }
-    });
-  }
+ngOnInit(): void {
+  this.route.queryParamMap.subscribe(params => {
+    const code = params.get('code'); 
+    
+    if (code) {
+      this.handleCognitoCallback(code);
+    } else if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/home']);
+    } else {
+      // 👉 SI NO HAY CODE NI LOGIN → REDIRIGIR A COGNITO
+      this.redirectToCognito();
+    }
+  });
+}
 
   // Función llamada desde el botón de Login en el HTML
   redirectToCognito(): void {
