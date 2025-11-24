@@ -1,9 +1,127 @@
-.card {
-  border-radius: 1rem;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
+/* ------------------------------------------------------------------- */
+/* 1. Reset y Tipografía Global */
+/* ------------------------------------------------------------------- */
+body {
+    /* Utiliza una fuente moderna y limpia */
+    font-family: 'Inter', sans-serif;
+    background-color: #f7f7f9; /* Un fondo ligeramente grisáceo */
+    color: #333;
 }
 
-.card:hover {
-  transform: scale(1.02);
+/* ------------------------------------------------------------------- */
+/* 2. Estilos de Contenedor y Títulos */
+/* ------------------------------------------------------------------- */
+.container.mt-5 {
+    padding-bottom: 50px;
+}
+
+.text-primary {
+    color: #1a237e !important; /* Azul oscuro sofisticado */
+    font-weight: 600;
+}
+
+.text-success {
+    color: #2e7d32 !important; /* Verde profundo para precios */
+    font-weight: 700;
+    font-size: 1.25rem; /* Destacar el precio */
+}
+
+/* ------------------------------------------------------------------- */
+/* 3. Estilos de Tarjetas (Filtros y Libros) */
+/* ------------------------------------------------------------------- */
+.card {
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Borde muy sutil */
+}
+
+/* Sombra suave y ligera para las tarjetas */
+.card.shadow-sm {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Efecto de elevación al pasar el ratón sobre los libros */
+.col .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Estilo para el cuerpo de la tarjeta de filtros */
+.col-md-3 .card-body {
+    padding: 25px;
+}
+
+/* ------------------------------------------------------------------- */
+/* 4. Estilos de Portada de Libro */
+/* ------------------------------------------------------------------- */
+.card-img-top {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    height: 300px; /* Ya definido en el HTML, pero lo aseguramos */
+    object-fit: cover;
+    opacity: 0.95; /* Ligeramente más suave */
+    transition: opacity 0.3s ease;
+}
+
+.col .card:hover .card-img-top {
+    opacity: 1;
+}
+
+/* ------------------------------------------------------------------- */
+/* 5. Estilos de Botones e Inputs */
+/* ------------------------------------------------------------------- */
+.btn-primary {
+    background-color: #1a237e;
+    border-color: #1a237e;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0d47a1; /* Un azul más oscuro al hacer hover */
+    border-color: #0d47a1;
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: #1a237e;
+    border-color: #1a237e;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #1a237e;
+    color: white;
+}
+
+.form-control {
+    border-radius: 8px;
+    border-color: #ccc;
+    padding: 10px 15px;
+    box-shadow: none !important; /* Eliminar el box-shadow por defecto al enfocar */
+}
+
+.form-control:focus {
+    border-color: #1a237e;
+    box-shadow: 0 0 0 0.25rem rgba(26, 35, 126, 0.25) !important;
+}
+
+/* ------------------------------------------------------------------- */
+/* 6. Alineación y Espaciado */
+/* ------------------------------------------------------------------- */
+/* Asegurar que el cuerpo de la tarjeta de libro use todo el espacio vertical */
+.card-body {
+    padding: 20px;
+}
+
+/* Ajuste para móviles: mejor espaciado para filtros */
+@media (max-width: 767.98px) {
+    .col-md-3 {
+        order: 2; /* Mueve los filtros debajo del catálogo en móvil */
+    }
+    .col-md-9 {
+        order: 1;
+    }
 }

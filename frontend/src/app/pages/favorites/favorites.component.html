@@ -1,0 +1,23 @@
+<div class="container my-5">
+  <h2 class="mb-4">Mis Libros Favoritos ❤️</h2>
+  
+  <div *ngIf="isLoading" class="text-center text-primary">Cargando favoritos...</div>
+  
+  <div *ngIf="!isLoading && favoriteBookDetails.length === 0" class="alert alert-info">
+    Aún no tienes libros guardados en favoritos.
+  </div>
+
+  <div class="row" *ngIf="!isLoading && favoriteBookDetails.length > 0">
+    <div *ngFor="let book of favoriteBookDetails" class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ book.title }}</h5>
+          <p class="card-text text-muted">Autor: {{ book.author || 'Desconocido' }}</p>
+          <button class="btn btn-outline-danger btn-sm" (click)="removeFavorite(book.id)">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

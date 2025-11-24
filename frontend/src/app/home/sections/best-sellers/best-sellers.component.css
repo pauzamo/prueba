@@ -1,3 +1,131 @@
-section{
-    padding: 3rem;
+/* Contenedor principal del carrusel */
+.book-carousel {
+    max-width: 1300px; /* Limita el ancho en pantallas grandes */
+    margin: 40px auto; /* Centra el carrusel y añade espacio vertical */
+    padding: 0 20px;
+}
+
+/* Título "Más vendidos" */
+.book-carousel h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--primary-blue); /* Línea azul debajo del título (como en el original) */
+    display: inline-block; /* Ajusta la línea azul al texto */
+    padding-bottom: 5px;
+}
+
+/* Configuración del carrusel */
+.carousel-container {
+    position: relative; /* Necesario para posicionar las flechas */
+    overflow: hidden; /* Oculta los libros que están fuera de vista */
+    padding: 10px 0; /* Espacio para sombras y flechas */
+}
+
+/* El slide que contendrá todas las tarjetas */
+.carousel-slide {
+    display: flex; /* Muestra las tarjetas una al lado de la otra */
+    transition: transform 0.3s ease-in-out; /* Animación de desplazamiento */
+}
+
+.book-card {
+    position: relative; /* Clave para la etiqueta flotante */
+    flex: 0 0 200px; /* Define el ancho de cada tarjeta (ajusta si lo necesitas) */
+    margin-right: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #eee; /* Borde sutil */
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s;
+}
+
+.book-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Efecto de elevación al pasar el mouse */
+}
+
+.book-card img {
+    width: 500px;
+    max-height: 250px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Título del libro */
+.book-card h2 {
+    font-size: 16px;
+    font-weight: 500;
+    height: 38px; /* Altura fija para evitar saltos de diseño */
+    overflow: hidden;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+/* Autor */
+.book-card p {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+/* Precio destacado */
+.price {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--top-red); /* O un color más oscuro si lo prefieres */
+    margin-bottom: 10px;
+}
+
+/* Botón "Comprar" */
+.buy-btn {
+    background-color: #072c79;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.buy-btn:hover {
+    background-color: #072c79;
+}
+
+/* Flechas de navegación */
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: rgb(163, 34, 34);
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    z-index: 20;
+    font-size: 20px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.prev {
+    left: 0;
+}
+
+.next {
+    right: 0;
+}
+
+.prev:hover, .next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.prev:disabled, .next:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

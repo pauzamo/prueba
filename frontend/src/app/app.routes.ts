@@ -6,7 +6,7 @@ import { CatalogoComponent } from './home/sections/catalogo/catalogo.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { MiPerfilComponent } from './pages/miperfil/miperfil.component';
 import { ChatAiComponent } from './components/chat-ai/chat-ai.component';
-import { CallbackComponent } from './pages/callback/callback.component';
+import { FavoritesComponent } from './pages/favorites/favorites.component';
 
 
 export const routes: Routes = [
@@ -18,7 +18,6 @@ export const routes: Routes = [
   { path: 'checkout', component: CheckoutComponent },
   { path: 'perfil', component: MiPerfilComponent},
   { path: 'chat', component: ChatAiComponent },
-  { path:'callback', component: CallbackComponent },
+  { path: 'favorites', component: FavoritesComponent },
   { path: '**', redirectTo: 'login' }
-
 ];

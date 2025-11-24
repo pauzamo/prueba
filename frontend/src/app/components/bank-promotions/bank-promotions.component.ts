@@ -11,13 +11,13 @@ import { CommonModule } from '@angular/common';
 export class BankPromotionsComponent {
 
   banks = [
-  { name: 'Galicia', logo: 'bank-logos/bco-galicia.svg' },
-  { name: 'Macro', logo: 'bank-logos/bco-macro.svg' },
-  { name: 'HSBC', logo: 'bank-logos/bco-hsbc.svg' },
-  { name: 'Santander', logo: 'bank-logos/bco-santander.svg' },
-  { name: 'Credicoop', logo: 'bank-logos/bco-credicoop.svg' },
-  { name: 'Nación', logo: 'bank-logos/bco-nacion.svg' }
-];
+    { name: 'Galicia', logo: 'bank-logos/bco-galicia.svg' },
+    { name: 'Macro', logo: 'bank-logos/bco-macro.svg' },
+    { name: 'HSBC', logo: 'bank-logos/bco-hsbc.svg' },
+    { name: 'Santander', logo: 'bank-logos/bco-santander.svg' },
+    { name: 'Credicoop', logo: 'bank-logos/bco-credicoop.svg' },
+    { name: 'Nación', logo: 'bank-logos/bco-nacion.svg' }
+  ];
 
   promotions = [
     {

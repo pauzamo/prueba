@@ -1,29 +1,73 @@
+// frontend/src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, map, of } from 'rxjs';
+import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode'; // <-- IMPORTANTE: Requiere jwt-decode
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private URL = 'https://13.216.111.250/api/auth'; // Usamos la IP de tu EC2
-  private URLUser = 'https://13.216.111.250/api/user';
+  // Mantener isLogged u otras variables de estado si las usa
+  isLogged = new BehaviorSubject<boolean>(this.checkToken()); 
+  
+  constructor(private http: HttpClient, private router: Router) { }
 
-  constructor(private http: HttpClient) {}
+  private readonly TOKEN_KEY = 'token'; 
 
-  // ⚠️ NUEVO MÉTODO: Envía el código de Cognito a tu backend para el intercambio de tokens
-  exchangeCognitoCode(code: string): Observable<any> {
-    return this.http.post(`${this.URL}/exchange-code`, { code: code });
+  // Función auxiliar para inicializar el estado de sesión
+  private checkToken(): boolean {
+      return !!this.getToken();
   }
 
-  // El método 'login' original ya no se usa en el flujo OIDC, puedes eliminarlo o comentarlo
-  // login(data: any): Observable<any> {
-  //   return this.http.post(`${this.URL}/login`, data);
-  // }
 
-  register(data: any): Observable<any> {
-    return this.http.post(`${this.URL}/register`, data);
+  //Almacenar el Token de Cognito (ID Token)
+  setToken(token: string): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+    this.isLogged.next(true); // Actualizar el estado de sesión
+  }
+
+  //Obtener el Token para el Interceptor
+  getToken(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  //Decodificar el Token para obtener el email (clave de la DB)
+  getDecodedToken(): any | null {
+    const token = this.getToken();
+    if (token) {
+      try {
+        // La librería jwt-decode verifica automáticamente la expiración
+        return jwtDecode(token);
+      } catch (Error) {
+        console.error("Token de Cognito inválido:", Error);
+        this.logout(); // Si falla la decodificación, forzar cierre de sesión
+        return null;
+      }
+    }
+    return null;
   }
   
-  getUserByEmail(email: string): Observable<any> {
-    return this.http.get(`${this.URLUser}/${email}`);
-  }
+  //Obtener el email del usuario logueado
+  getUserEmail(): string | null {
+    const decoded = this.getDecodedToken();
+    // Usamos 'email' (atributo estándar) o 'username' (a veces usado por Cognito)
+    return decoded ? (decoded.email || decoded.username) : null; 
+  }
+
+  //Verificar si el usuario está autenticado
+  isLoggedIn(): boolean {
+    return this.isLogged.value;
+  }
+
+  //Cierre de sesión (Redirecciona al backend para el logout de Cognito)
+  logout(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    this.isLogged.next(false);
+    // Redirigir al endpoint de LOGOUT del backend de Cognito
+    window.location.href = 'http://localhost:3000/logout'; 
+  }
+
+  
 }

@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "npx ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -20,8 +20,9 @@
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
-    "@google/generative-ai": "^0.24.1",
+    "aws-amplify": "^6.15.7",
     "bootstrap": "^5.3.7",
+    "jwt-decode": "^4.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -30,13 +31,19 @@
     "@angular-devkit/build-angular": "^19.2.15",
     "@angular/cli": "^19.2.15",
     "@angular/compiler-cli": "^19.2.0",
+    "@aws-amplify/backend": "^1.17.0",
+    "@aws-amplify/backend-cli": "^1.8.0",
     "@types/jasmine": "~5.1.0",
+    "aws-cdk-lib": "^2.216.0",
+    "constructs": "^10.4.2",
+    "esbuild": "^0.25.11",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.7.2"
+    "tsx": "^4.20.6",
+    "typescript": "^5.8.3"
   }
 }

@@ -13,11 +13,11 @@ import { ApiService } from '../../services/api-service.service';
 export class BookCarouselComponent {
 
   @Input() title: string = '';
-  @Input() searchQuery: string = ''; 
+  @Input() searchQuery: string = '';
   books: any[] = [];
 
   currentIndex = 0;
-  visibleItems = 4; // Cantidad de libros visibles a la vez
+  visibleItems = 5; // Cantidad de libros visibles a la vez
 
   constructor(
     private cartService: CartService,
@@ -38,7 +38,7 @@ export class BookCarouselComponent {
       error: (err) => {
         console.error('Error al cargar libros', err)
       }
-      
+
     })
   }
 
@@ -48,7 +48,7 @@ export class BookCarouselComponent {
 
   nextSlide() {
     this.currentIndex = Math.min(
-      this.books.length - this.visibleItems, 
+      this.books.length - this.visibleItems,
       this.currentIndex + 1
     );
   }

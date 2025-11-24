@@ -1,86 +1,17 @@
 const express = require('express');
-const { register, login } = require('../controller/auth.controllers');
+const { registerProfile, getProfile, updateProfile } = require('../controller/auth.controllers');
+const authenticateCognito = require('../middleware/cognitoAuth.middleware');
 
 const router = express.Router();
 
-/**
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Registrar un nuevo usuario
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 example: usuario@ejemplo.com
- *               password:
- *                 type: string
- *                 format: password
- *                 example: MiPassword123!
- *               nombre:
- *                 type: string
- *                 example: Juan Pérez
- *     responses:
- *       200:
- *         description: Usuario registrado exitosamente
- *       400:
- *         description: Datos inválidos
- *       500:
- *         description: Error interno del servidor
- */
-router.post('/register', register);
+// Rutas de uso público/inicial:
+// POST: Crea el perfil local después de que Cognito registra al usuario por primera vez.
+router.post('/register-profile', registerProfile); 
+// POST: Obtiene el perfil local enviando el email (para el primer login).
+router.post('/profile', getProfile); 
 
-/**
- * @swagger
-* /api/auth/login:
- *   post:
- *     summary: Iniciar sesión
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 example: usuario@ejemplo.com
- *               password:
- *                 type: string
- *                 format: password
- *                 example: MiPassword123!
- *     responses:
- *       200:
- *         description: Login exitoso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *       401:
- *         description: Credenciales inválidas
- *       500:
- *         description: Error interno del serv
- */
-router.post('/login', login);
-router.post('/exchange-code', exchangeCode);
+// Rutas protegidas (Requieren Token JWT de Cognito válido)
+// PUT: Actualiza el perfil
+router.put('/profile', authenticateCognito, updateProfile); 
 
 module.exports = router;

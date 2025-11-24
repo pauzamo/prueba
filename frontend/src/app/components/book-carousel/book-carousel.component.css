@@ -1,123 +1,202 @@
+/* Variables de Color para la Elegancia */
+:root {
+    --bg-dark: #0c0c0c;             /* Fondo oscuro principal (casi negro) */
+    --text-light: #f0f0f0;          /* Texto principal blanco/claro */
+    --text-subtle: #aaaaaa;         /* Texto secundario (autor) */
+    --accent-color: #003366;        /* Color de acento: Ámbar/Dorado */
+    --card-bg-hover: #1f1f1f;       /* Fondo de tarjeta en hover */
+    --border-subtle: rgba(255, 255, 255, 0.1); /* Borde sutil */
+}
+
+/* Configuración de la sección completa */
+.full-page-section {
+    min-height: 100vh;
+    background-color: #0c0c0c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding: 80px 0; /* Asegurar espacio arriba y abajo si no es 100vh */
+}
+
+/* Contenedor principal del carrusel */
 .book-carousel {
-  margin: 4rem 0;
-  padding: 0 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 40px; /* Más espacio en los lados para el diseño */
 }
 
+/* Título "Los más vendidos" */
+.book-carousel h2 {
+    font-size: 30px; /* Título más grande */
+    font-weight: 300; /* Fuente más ligera para elegancia */
+    color: #f0f0f0;
+    margin-bottom: 50px; /* Más separación */
+    text-align: center; /* Título centrado */
+    letter-spacing: 3px;
+    text-transform: uppercase;
+
+    /* Efecto de línea sutil */
+    position: relative;
+    padding-bottom: 15px;
+}
+
+/* Título: Línea de acento más limpia */
+.book-carousel h2::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 60px; /* Línea más corta */
+    height: 1px; /* Línea más delgada */
+}
+
+.book-carousel .h2-titulo::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 60px; /* Línea más corta */
+    height: 1px; /* Línea más delgada */
+    background: #003366;
+}
+
+/* Configuración del carrusel */
 .carousel-container {
-  position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    padding: 20px 0;
 }
 
+/* El slide que contendrá todas las tarjetas */
 .carousel-slide {
-  display: flex;
-  gap: 1.5rem;
-  overflow: hidden;
-  scroll-behavior: smooth;
-  padding: 1rem 0;
+    display: flex;
+    justify-content: flex-start; /* Permite desplazamiento */
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Transición más suave y elegante */
 }
 
+/* --- TARJETA DE LIBRO (BOOK CARD) --- */
 .book-card {
-  min-width: 250px;
-  max-width: 250px;
-  min-height: 350px;
-  background: white;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s;
+    position: relative;
+    margin: 0 15px; /* Menor margen lateral */
+    padding: 20px 15px; /* Reducir padding */
+    width: 260px; /* Establecer un ancho fijo */
+    background-color: #121212; /* Fondo muy oscuro, casi imperceptible */
+    border-radius: 10px; /* Bordes sutilmente redondeados */
+    text-align: center;
+    box-shadow: 0 3px 15px rgba(70, 70, 70, 0.552); /* Sombra más fuerte */
+    border: 1px solid var(--border-subtle); /* Borde sutil para definir la forma */
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .book-card:hover {
-  transform: translateY(-5px);
+    background-color: var(--card-bg-hover); /* Fondo ligeramente más claro al hacer hover */
+    box-shadow: 0 8px 30px rgba(196, 196, 196, 0.672); /* Efecto de elevación más notable */
+    transform: translateY(-5px);
 }
 
 .book-card img {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 4px;
+    width: auto;
+    height: 250px; /* Altura de imagen más estandarizada */
+    object-fit: contain; /* Asegura que la imagen se vea completa */
+    margin: 0 auto 15px;
+    display: block;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra en el libro */
+    border-radius: 2px;
 }
 
+/* Título del libro */
+.book-card h2 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #f0f0f0;
+    margin-bottom: 5px;
+    height: 2.4em; /* Altura para 2 líneas */
+    overflow: hidden;
+    text-align: center;
+    padding: 0; /* Remover padding del h2 para las tarjetas */
+}
+
+/* Autor */
+.book-card p {
+    font-size: 14px;
+    color: #aaaaaa; /* Color gris sutil */
+    margin-bottom: 15px;
+}
+
+/* Precio destacado */
 .price {
-  font-weight: bold;
-  color: #e86e2c;
+    display: block;
+    font-size: 22px; /* Precio más grande */
+    font-weight: 700;
+    color: #e3a0a0; /* Precio en color de acento (Dorado) */
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
 }
 
-.prev, .next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.prev:hover, .next:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
-
-.prev:disabled, .next:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.prev {
-  left: -20px;
-}
-
-.next {
-  right: -20px;
-}
-
+/* Botón "Comprar" - Estilo Ghost elegante */
 .buy-btn {
-  width: 100%;
-  padding: 8px 0;
-  margin-top: 10px;
-  background-color: #e86e2c;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    padding: 10px 40px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    border: 1px solid #ffffff; /* Borde delgado de color acento */
+    background-color: transparent;
+    color: #ffffff; /* Texto en color de acento */
+    font-size: 14px;
 }
 
 .buy-btn:hover {
-  background-color: #d45a1a;
+    background-color: #ffffff; /* Fondo sólido de acento al hover */
+    color: #0c0c0c; /* Letras oscuras al hover */
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px #003366; /* Sombra de color acento */
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .carousel-container {
-    max-width: 100%;
-  }
-  
-  .book-card {
-    min-width: 200px;
-  }
-  
-  .prev, .next {
-    width: 30px;
-    height: 30px;
-  }
-  
-  .prev {
-    left: 5px;
-  }
-  
-  .next {
-    right: 5px;
-  }
+/* --- FLECHAS DE NAVEGACIÓN --- */
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    /* Estilo limpio */
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo blanco semi-transparente */
+    color: #f0f0f0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 18px; /* Tamaño un poco más grande */
+    cursor: pointer;
+    z-index: 20;
+    font-size: 18px;
+    border-radius: 50%;
+    transition: all 0.3s;
+    opacity: 0.8;
+}
+
+.prev {
+    left: 10px; /* Más cerca del borde del carrusel */
+}
+
+.next {
+    right: 10px; /* Más cerca del borde del carrusel */
+}
+
+.prev:hover, .next:hover {
+    background-color: #003366;
+    color: #0c0c0c;
+    border-color: #003366;
+    transform: translateY(-50%) scale(1.1); /* Ligero crecimiento al pasar el mouse */
+    opacity: 1;
+}
+
+.prev:disabled, .next:disabled {
+    opacity: 0.4;
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
+    transform: translateY(-50%) scale(1);
 }

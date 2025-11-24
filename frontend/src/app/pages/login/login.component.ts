@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common'; 
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,20 +17,50 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent implements OnInit {
 
-// 1. CONFIGURACIÓN DE COGNITO (¡REEMPLAZA [TU_CLIENT_ID]!)
-  private readonly COGNITO_DOMAIN = 'https://us-east-1-cdjiudhc.auth.us-east-1.amazoncognito.com';
-  private readonly CLIENT_ID = '2k8b23s30om1ottpre3pm1tmr5'; // 👈 OBTÉN ESTE ID DE LA CONSOLA
-  private readonly REDIRECT_URI = 'https://13.216.111.250/callback'; // 👈 La URL de retorno configurada
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private http: HttpClient
+  ) { }
 
   ngOnInit(): void {
-    // 2. CONSTRUYE LA URL DEL ENDPOINT DE AUTORIZACIÓN OIDC
-    const authUrl = `${this.COGNITO_DOMAIN}/oauth2/authorize?` +
-      `response_type=code&` + // Pedimos el Código de Autorización
-      `client_id=${this.CLIENT_ID}&` +
-      `redirect_uri=${encodeURIComponent(this.REDIRECT_URI)}&` +
-      `scope=openid%20email%20profile`; // Los ámbitos que configuraste
+    this.route.queryParamMap.subscribe(params => {
+      const code = params.get('code'); 
+      
+      if (code) {
+        // Estamos regresando de Cognito con el código de autorización
+        this.handleCognitoCallback(code);
+      } else if (this.authService.isLoggedIn()) {
+        this.router.navigate(['/home']);
+      }
+    });
+  }
 
-    // 3. REDIRIGE AL USUARIO A LA PÁGINA DE INICIO DE SESIÓN DE COGNITO
-    window.location.href = authUrl;
+  // Función llamada desde el botón de Login en el HTML
+  redirectToCognito(): void {
+    // Redirige al endpoint /login de su backend, que inicia el flujo PKCE de Cognito
+    window.location.href = 'http://localhost:3000/login'; 
+  }
+
+  // Lógica para manejar el código y obtener el token JWT
+  handleCognitoCallback(code: string): void {
+    this.http.get(`http://localhost:3000/callback?code=${code}`).subscribe({
+      next: (response: any) => {
+        const idToken = response.token.id_token; 
+        
+        if (idToken) {
+            this.authService.setToken(idToken); 
+            this.router.navigate(['/home']); 
+        } else {
+            console.error('Error: Token ID no encontrado.');
+            this.router.navigate(['/login']); 
+        }
+      },
+      error: (err) => {
+        console.error('Error en el callback del backend:', err);
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

@@ -1,76 +1,210 @@
-.bank-promotions {
-  padding: 3rem;
-  background: #e0eaf3;
-  text-align: center;
+s/* ----------------------------------- */
+/* Estilos del Contenedor Exterior (el color de la página) */
+/* ----------------------------------- */
+body {
+    /* Si esta sección es la única que tiene este fondo, puedes aplicarlo al contenedor exterior */
+    /* Añade algo de padding arriba y abajo para que se vea el color de fondo */
+    padding: 50px 0;
 }
 
-.bank-logos {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin: 2rem 0;
+
+/* ----------------------------------- */
+/* Estilos del Contenedor Principal (la caja negra redondeada) */
+/* ----------------------------------- */
+.main-container {
+    /* Color de fondo oscuro y bordes redondeados grandes */
+    border-radius: 40px;
+    padding: 20px;
+    margin-top: 80px;
+    margin-left: 150px;
+    margin-right: 150px;
+    font-family: Arial, sans-serif;
+    /* Sombra opcional para un efecto de elevación sutil */
+    box-shadow: 0 15px 50px rgba(135, 134, 134, 0.2);
 }
 
-.bank-logos img {
-  height: 40px;
-  filter: grayscale(30%);
-  transition: all 0.3s;
+.content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 70px;
 }
 
-.bank-logos img:hover {
-  filter: grayscale(0);
-  transform: scale(1.05);
+/* ----------------------------------- */
+/* Estilos del contenido izquierdo (Título y Etiquetas) */
+/* ----------------------------------- */
+.main-title {
+    font-size: 68px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: white;
+    margin-bottom: 40px;
 }
 
-.promo-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+.tags-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Eliminamos el max-width para que se ajusten mejor */
 }
 
-.promo-card {
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-@media (max-width: 1024px) {
-  .bank-promotions {
-    padding: 2rem 1.5rem;
-  }
-  
-  .bank-logos {
-    gap: 1rem;
-  }
-
-  .bank-logos img {
-    height: 35px;
-  }
-}
-
-/* Móviles */
-@media (max-width: 600px) {
-  .bank-promotions {
-    padding: 1.5rem 1rem;
-  }
-
-  .bank-logos {
+.tag-row {
+    display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-  }
+    gap: 8px;
+}
 
-  .bank-logos img {
-    height: 30px;
-    margin-bottom: 0.5rem;
-  }
+.tag, .main-tag {
+    /* Estilos base */
+    color: white;
+    background-color: var(--tag-background);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    /* Para dar el efecto de botones reales, un sutil borde */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-  .promo-cards {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
+.tag:hover {
+    background-color: #444444; /* Un gris un poco más claro al hacer hover */
+}
 
-  .promo-card {
-    padding: 0.75rem;
-  }
+.main-tag {
+    /* Estilo para la etiqueta destacada (Acción) */
+    background-color: var(--accent-purple);
+    color: white;
+    font-weight: bold;
+    border-color: var(--accent-purple);
+}
+
+.main-tag:hover {
+    background-color: #9a6ec2;
+}
+
+
+/* ----------------------------------- */
+/* Estilos del contenido derecho (Ilustración y texto secundario) */
+/* ----------------------------------- */
+.illustration-placeholder {
+    /* El rectángulo gris oscuro a la derecha */
+    width: 100%;
+    height: 300px;
+    background-image: url("/assets/img/generos-de-novelas.jpg");;
+    border-radius: 20px;
+    margin-bottom: 40px;
+}
+
+.secondary-title {
+    font-size: 32px;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.description {
+    font-size: 18px;
+    color: #cccccc;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    /* Ajuste para que las negritas (ej. **Acción**) se vean mejor */
+    font-weight: 300;
+}
+
+.secondary-text-section strong {
+    color: var(--accent-purple); /* Resalta los nombres de los géneros */
+    font-weight: bold;
+}
+
+.download-button {
+    padding: 14px 30px; /* Un poco más grandes */
+    text-decoration: none;
+    border-radius: 8px; /* Ligeramente más cuadrados */
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid transparent;
+    background-color: transparent;
+    border-color: white;
+    color: white;
+}
+
+.download-button:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo ligeramente blanco al hacer hover */
+    transform: translateY(-2px);
+}
+
+/* --- Responsive (Asegurando que se vea bien en móvil) --- */
+@media (max-width: 992px) {
+    .content-wrapper {
+        flex-direction: column; /* Apila las columnas */
+    }
+
+    .main-container {
+        padding: 40px 30px;
+        width: 95%;
+    }
+
+    .main-title {
+        font-size: 48px;
+    }
+
+    .illustration-placeholder {
+        height: 200px;
+    }
+}
+
+/* --- Estilos Adicionales para los Tags --- */
+
+.tags-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Agregamos el máximo de ancho para que se agrupen bien, como en la imagen */
+    max-width: 500px;
+    padding-left: 5px; /* Pequeño ajuste para mejor alineación visual */
+}
+
+.tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Estilos base para todas las etiquetas */
+.tag, .main-tag {
+    color: white;
+    border-radius: 20px;
+    padding: 6px 14px; /* Un poco más de padding para que se vean más como botones */
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-transform: capitalize; /* Para que las palabras se vean bien */
+}
+
+.tag:hover {
+    background-color: #444444;
+}
+
+.full-page-section {
+    /* 1. Altura de Página Completa */
+    /* Asegura que ocupe el 100% de la altura visible de la ventana */
+    min-height: 100vh;
+
+    /* 2. Fondo (Ajusta este color a tu diseño) */
+    background-color: #0c0c0c; /* Un gris oscuro para destacar el contenido */
+
+    /* 3. Centrado Vertical y Horizontal */
+    /* Usa Flexbox para centrar el carrusel en el medio de la pantalla */
+    display: flex;
+    align-items: center; /* Centrado vertical */
+    justify-content: center; /* Centrado horizontal (si el carrusel es más pequeño) */
+
+    /* 4. Evitar scroll innecesario */
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }

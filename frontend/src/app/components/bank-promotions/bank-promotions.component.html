@@ -1,17 +1,46 @@
-<section class="bank-promotions">
-  <h2>Promociones bancarias exclusivas</h2>
-  <div class="bank-logos">
-    <div class="bank-item" *ngFor="let bank of banks">
-      <img [src]="bank.logo" [alt]="'Logo ' + bank.name">
-      <p class="bank-name">{{ bank.name }}</p>
-    </div>
-  </div>
+<div class="full-page-section">
+  <section class="main-container">
+    <div class="content-wrapper">
+      <div class="left-content">
+        <h1 class="main-title">
+          Todos los géneros <br> para vos
+        </h1>
 
-  <div class="promo-cards">
-    <div class="promo-card" *ngFor="let promo of promotions">
-      <h3>{{ promo.bank }}</h3>
-      <p>{{ promo.description }}</p>
-      <span class="discount">{{ promo.discount }}% OFF</span>
+        <div class="tags-section">
+          <div class="tag-row">
+            <span class="main-tag">Acción</span>
+            <span class="tag">Aventura</span>
+            <span class="tag">Ciencia Ficción</span>
+            <span class="tag">Fantasía</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Drama</span>
+            <span class="tag">Romance</span>
+            <span class="tag">Thriller</span>
+            <span class="tag">Misterio</span>
+            <span class="tag">Crimen</span>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Comedia</span>
+            <span class="tag">Sátira</span>
+            <span class="tag">Parodia</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-content">
+        <div class="illustration-placeholder"></div>
+        <div class="secondary-text-section">
+          <h2 class="secondary-title">Encontrá tu Próximo Libro</h2>
+          <p class="description">
+            Cansado de navegar sin rumbo? Usa nuestros tags de género para filtrar, clasificar y descubrir joyas
+            cinematográficas ocultas, de **Acción** hasta **Documental**.
+          </p>
+          <button class="download-button">
+            Explora Los Libros
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>

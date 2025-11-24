@@ -1,141 +1,136 @@
+// Importaciones
 const express = require('express');
+require('dotenv').config();
 const session = require('express-session');
 const cors = require('cors');
 require('./config/db.js');
-const { specs, swaggerUi } = require('./config/swagger.config');
 
+// Rutas
 const authRoutes = require('./routes/auth.routes.js');
+const favoritesRoutes = require('./routes/favorites.routes.js');
 const bookRoutes = require('./routes/book.routes.js');
-const userRoutes = require('./routes/user.routes.js');
 const checkoutRoutes = require('./routes/checkout.routes.js');
-const aiGeminiRoutes = require('./routes/aiGemini.routes');
+const aiGeminiRoutes = require('./routes/aiGemini.routes.js');
 
+// App
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Middleware
-// ⚠️ Nota: Cambiado el origen a la IP de tu EC2 para consistencia
-app.use(cors({ origin: ['http://localhost:4200', 'https://13.215.111.250'], credentials: true }));
+// CORS
+app.use(cors({
+  origin: [
+    'http://localhost:4200',
+    'https://main.d17jgtfjujlttk.amplifyapp.com'
+  ],
+  credentials: true
+}));
+
+// JSON + Session
 app.use(express.json());
 app.use(session({
-	secret: 'some secret',
-	resave: false,
-	saveUninitialized: true,
-	cookie: { secure: true, sameSite: 'lax' } // 'secure: true' recomendado para HTTPS
+  secret: 'some secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, sameSite: 'lax' }
 }));
 
 // Ruta de prueba
 app.get('/', (req, res) => res.send('¡Backend funcionando con CommonJS! 🚀'));
 
-// ---------- Cargamos openid-client dinámicamente ----------
+
+// ---------- BLOQUE COGNITO ----------
 (async () => {
-	try {
-		// 👇 FIX: obtener el default export
-		const openid = await import('openid-client');
-		const { Issuer, generators } = openid.default || openid;
-		
-		// 🚨 Importamos el controlador de auth para acceder a la lógica de intercambio OIDC/DB
-		const authController = require('./controller/auth.controllers.js');
+  try {
 
-		// Cognito OpenID Client
-		const issuer = await Issuer.discover(
-			'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_CdJiudHxQ'
-		);
+    // *** IMPORTACIÓN DEFINITIVA PARA COMMONJS ***
+    const { Issuer, generators } = require('openid-client');
 
-		// ⚠️ IMPORTANTE: Client ID y Secret deben ir en variables de entorno o un archivo de config.
-		const client = new issuer.Client({
-			client_id: '1bimmt2aaat9brr3pb2ssf4fpa',
-			client_secret: '15rij2gb7t7kicd92jonrnhr3dd101mnm1bsstk2s0vo8ssk8ggp',
-			// Usamos la IP de la EC2 para el backend
-			redirect_uris: ['https://13.216.111.250/callback'], 
-			response_types: ['code']
-		});
+    if (!Issuer || !generators) {
+      throw new Error("openid-client no exportó Issuer o generators");
+    }
 
-		console.log('✅ Cognito client inicializado');
+    // Descubrir ISSUER de Cognito
+    const issuer = await Issuer.discover(
+      'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_dvurIkHLe'
+    );
 
-		// ---------- Rutas Cognito de redirección ----------
-		// 1. Ruta que inicia el flujo OIDC
-		app.get('/login', (req, res) => {
-			const codeVerifier = generators.codeVerifier();
-			const codeChallenge = generators.codeChallenge(codeVerifier);
-			req.session.codeVerifier = codeVerifier;
+    // Cliente
+    const client = new issuer.Client({
+      client_id: '1951tqfvb7fakucpruls1e1875',
+      client_secret: '220il2krtt5hgp1q0b1903vj492gtqnhigp04733cj4bmui15b7',
+      redirect_uris: ['https://main.d17jgtfjujlttk.amplifyapp.com/home'],
+      response_types: ['code']
+    });
 
-			const url = client.authorizationUrl({
-				scope: 'openid email profile',
-				code_challenge: codeChallenge,
-				code_challenge_method: 'S256',
-			});
+    console.log("✅ Cognito client inicializado");
 
-			res.redirect(url);
-		});
+    // LOGIN
+    app.get('/login', (req, res) => {
+      const codeVerifier = generators.codeVerifier();
+      const codeChallenge = generators.codeChallenge(codeVerifier);
 
-		// 2. Ruta de callback de Cognito (¡La más importante!)
-		app.get('/callback', async (req, res) => {
-			try {
-				if (!req.session || !req.session.codeVerifier) {
-					return res.status(400).send('CodeVerifier no encontrado en sesión');
-				}
+      req.session.codeVerifier = codeVerifier;
 
-				const params = client.callbackParams(req);
-				
-				// 🚨 2.1. Intercambio de Código por Tokens con Cognito
-				const tokenSet = await client.callback(
-					'https://13.216.111.250/callback', // Asegúrate que esta URL coincida con la de Cognito
-					params,
-					{ code_verifier: req.session.codeVerifier }
-				);
+      const url = client.authorizationUrl({
+        scope: 'openid email profile',
+        code_challenge: codeChallenge,
+        code_challenge_method: 'S256'
+      });
 
-				// Limpiar el verifier después de usarlo
-				delete req.session.codeVerifier;
+      res.redirect(url);
+    });
 
-				const idToken = tokenSet.id_token;
-				
-				// 🚨 2.2. Usamos el controlador interno para procesar el token y generar el token de sesión de la app.
-				// Nota: Usamos el ID Token porque contiene el email del usuario
-				const internalResponse = await authController.processOidcLogin(idToken);
-				
-				if (internalResponse.status !== 200) {
-					throw new Error('Error interno al crear sesión');
-				}
+    // CALLBACK
+    app.get('/callback', async (req, res) => {
+      try {
+        if (!req.session || !req.session.codeVerifier) {
+          return res.status(400).send('No hay codeVerifier en sesión');
+        }
 
-				// 🚨 2.3. Redirigir al frontend de Angular y pasar el token JWT de la aplicación
-				// El frontend Angular en la ruta '/auth/callback' debe capturar este token JWT del query.
-				res.redirect(`http://localhost:4200/auth/callback?token=${internalResponse.body.token}`);
-				
-			} catch (err) {
-				console.error('Error en callback de Cognito:', err);
-				// Redirigir a la página de login con un mensaje de error
-				res.redirect(`http://localhost:4200/login?error=auth_failed`);
-			}
-		});
+        const params = client.callbackParams(req);
 
-		// Rutas internas de tu app
-		app.use('/api/auth', authRoutes);
-		app.use('/api/books', bookRoutes);
-		app.use('/api/user', userRoutes);
-		app.use('/api/checkout', checkoutRoutes);
-		app.use('/api/ai', aiGeminiRoutes);
+        const tokenSet = await client.callback(
+          'https://main.d17jgtfjujlttk.amplifyapp.com/home',
+          params,
+          { code_verifier: req.session.codeVerifier }
+        );
 
-		// Iniciar servidor después de Cognito
-		app.listen(PORT, () =>
-			console.log(`Servidor escuchando en http://localhost:${PORT}`)
-		);
+        req.session.tokenSet = tokenSet;
+        res.json({ message: 'Login exitoso con Cognito', token: tokenSet });
 
-	} catch (err) {
-		console.error('❌ Error cargando openid-client:', err);
-	}
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error en callback' });
+      }
+    });
+
+    // LOGOUT
+    app.get('/logout', (req, res) => {
+      req.session.destroy(() => {
+        const logoutUrl =
+          `https://us-east-1_dvurikhle.auth.us-east-1.amazoncognito.com/logout` +
+          `?client_id=1951tqfvb7fakucpruls1e1875` +
+          `&logout_uri=http://localhost:4200/login`;
+
+        res.redirect(logoutUrl);
+      });
+    });
+
+    // API protegidas
+    app.use('/api/auth', authRoutes);
+    app.use('/api/favorites', favoritesRoutes);
+    app.use('/api/books', bookRoutes);
+    app.use('/api/checkout', checkoutRoutes);
+    app.use('/api/ai', aiGeminiRoutes);
+
+    // Levantar servidor
+    app.listen(PORT, () =>
+      console.log(`Servidor escuchando en http://localhost:${PORT}`)
+    );
+
+  } catch (err) {
+    console.error("❌ Error cargando openid-client:", err);
+    process.exit(1);
+  }
+
 })();
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
-	explorer: true,
-	customCss: '.swagger-ui .topbar { display: none }',
-	customSiteTitle: "API Documentation",
-	swaggerOptions: {
-		persistAuthorization: true, // Mantiene el token JWT entre recargas
-	}
-}));
-
-app.get('/api-docs.json', (req, res) => {
-	res.setHeader('Content-Type', 'application/json');
-	res.send(specs);
-});
